@@ -1,4 +1,4 @@
-# HRSF77/78 Legacy Alt
+# Fullstack Review
 
 This repo contains four modules, each focusing on one isolated concept related to software engineering.
 - Module 0: Async Code
