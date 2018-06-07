@@ -1,25 +1,47 @@
-var express = require('express');
-var dogs = require('./helpers/dogs.js');
+const express = require('express');
+const bodyParser = require('body-parser');
+const dogs = require('./helpers/dogs.js');
 
-/*
-Your server here! If you need help getting started,
-check out the express hello world documentation.
-https://expressjs.com/en/starter/hello-world.html
-*/
+//create server
 
-// var server = http.createServer(function(req, res) {
-// 	if (req.url === '/') {
-// 		res.writeHead(200, { 'Content-Type': 'text/html' });
-// 		fs.createReadStream(__dirname + '/public/index.html')
-// 	}
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-// 	if (req.url === '/api/dogs') {
-// 		res.writeHead(200, { 'Content-Type': 'application/json' });
-// 		let obj = {
-// 			firstName: 'Dasith',
-// 			lastName: 'Perera',
-// 			age: 5,
-// 		};
-// 		res.end(JSON.stringify(obj));
-// 	}
-// });
+//add bodyparser middle ware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+//set the static content
+app.use(express.static('public'));
+
+app.get('/api/dogs', (req, res) => {
+	dogs.getAll(data => {
+		res.type('application/json');
+		res.json(data);
+	});
+});
+
+app.get('/api/dogs/:id', (req, res) => {
+	dogs.getOneById(req.params.id, data => {
+		if (data) {
+			res.json(data);
+		} else {
+			res.status(404).send('Not found');
+		}
+	});
+});
+//non existing routes
+app.get('*', (req, res) => {
+	res.status(404).send('Not found');
+});
+
+app.post('/api/dogs', (req, res) => {
+	res.set('Content-Type', 'application/json');
+	dogs.addOne(req.body.name, req.body.breed, data => {
+		res.json(data);
+	});
+});
+
+app.listen(PORT, () => {
+	console.log(`Server is running on Port ${PORT}`);
+});

@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha spec/",
-    "start": "nodemon bare-node-server.js"
+    "start": "nodemon express-server.js"
   },
-  "author": "Beth Johnson <curriculum.team@hackreactor.com>",
+  "author": "",
   "license": "ISC",
   "dependencies": {
     "chai": "^4.0.2",

@@ -16,9 +16,8 @@ var formatData = () => {
 
   rl.on('line', line => {
     //add each line of dog reacord to the final array
+    console.log(line);
     dogsDataArray.push(generateDogObject(line.split(',')));
-  }).on('end', () => {
-    console.log('List of Dogs in the array ->', dogsDataArray);
   });
 };
 
