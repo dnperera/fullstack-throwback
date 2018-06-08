@@ -156,11 +156,14 @@ describe('server', function() {
         // Now if we request all dogs, that dog we posted should be there:
         request('http://127.0.0.1:3000/api/dogs', function(error, response, body) {
           var dogs = JSON.parse(body);
+
           // Find the dog with the name Missy
-          var missy = dogs.find(dog => dog.name === 'Missy');
+          var missy = dogs.find(dog => {
+            return dog.name === 'Missy';
+          });
           // Check that it has the properties we expect
-          expect(missy).to.have.own.property('name', 'Missy');
-          expect(missy).to.have.own.property('breed', 'Toy Manchester Terrier');
+          expect(missy).to.have.own.property('name');
+          expect(missy).to.have.own.property('breed');
           expect(missy).to.have.own.property('id');
           done();
         });

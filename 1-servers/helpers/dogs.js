@@ -29,6 +29,35 @@ var generateDogObject = record => {
   };
 };
 
+const readFile = () => {
+  return new Promise((resolve, reject) => {
+    let records = [];
+    var stream = fs.createReadStream(dogDataFile, { endcoding: 'uf8' });
+    var rl = readline.createInterface({
+      input: stream,
+      terminal: false,
+    });
+    rl.on('line', line => {
+      records.push(generateDogObject(line.split(',')));
+    });
+
+    stream.on('close', () => {
+      resolve(records);
+    });
+  });
+};
+
+// const readRecords = async () => {
+//   try {
+//     const results = await readFile();
+//     results.forEach(record => {
+//       console.log('File Results -->' + JSON.stringify(record));
+//     });
+//   } catch (error) {
+//     console.log('Error in Reading Data File ->', error);
+//   }
+// };
+
 formatData(); // this function execute to load data and format
 
 var getAll = function(callback) {
@@ -53,16 +82,30 @@ var getOneById = function(id, callback) {
   callback(matchingRecord[0]);
 };
 
-var addOne = function(name, breed, callback) {
+const writeFile = newEntry => {
+  return new Promise((resolve, reject) => {
+    fs.appendFile(dogDataFile, newEntry, function(err) {
+      if (err) {
+        reject(err);
+      }
+      resolve();
+    });
+  });
+};
+var addOne = async function(name, breed, callback) {
   // Your code here! This function should add a
   // dog with name, breed, and id (use the shortid module)
   // to the dog data file
   let id = shortid.generate();
   let newEntry = `${name}, ${breed}, ${id}\n`;
-  fs.appendFile(dogDataFile, newEntry, function(err) {
-    if (err) throw err;
-    formatData(getAll(callback));
-  });
+  try {
+    await writeFile(newEntry);
+    const results = await readFile();
+    dogsDataArray = [...results];
+    callback(dogsDataArray);
+  } catch (error) {
+    console.log('error in saving new entry -->', error);
+  }
 };
 
 module.exports.getAll = getAll;
